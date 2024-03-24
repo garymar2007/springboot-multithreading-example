@@ -1,27 +1,22 @@
 package com.gary.springbootmultithreadingexample;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gary.springbootmultithreadingexample.dto.Employee;
+import com.gary.springbootmultithreadingexample.service.EmployeeReminderService;
 import com.gary.springbootmultithreadingexample.service.EmployeeService;
 import com.gary.springbootmultithreadingexample.utils.TimeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @SpringBootApplication
 public class SpringbootMultithreadingExampleApplication implements CommandLineRunner {
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeReminderService employeeReminderService;
 	@Autowired
 	private TimeHelper timeHelper;
 
@@ -54,6 +49,10 @@ public class SpringbootMultithreadingExampleApplication implements CommandLineRu
 		employeeService.fetchEmployeeListBySupplyAsyncWithCustomPool(jsonFile3);
 		System.out.println("Total Elapsed Time in customerPool: " + timeHelper.timeElapsed() + " ms");
 		System.out.println("Total Elapsed Time in defaultPool: " + defaultTimer1 + " ms");
+
+		timeHelper.start();
+		employeeReminderService.sendReminderToEmployees().get();
+		System.out.println("Total Elapsed Time in customerPool: " + timeHelper.timeElapsed() + " ms");
 	}
 
 	/**
